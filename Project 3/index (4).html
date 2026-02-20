@@ -1,0 +1,1211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sandipan Maity | AI & Python Projects</title>
+
+  <!-- Optional: Icons (CDN) -->
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <style>
+    :root{
+      --bg0:#070A12;
+      --bg1:#0A1022;
+      --card: rgba(255,255,255,.06);
+      --card2: rgba(255,255,255,.10);
+      --stroke: rgba(255,255,255,.12);
+      --txt: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
+      --muted2: rgba(255,255,255,.56);
+      --accent:#7C4DFF;
+      --accent2:#00E5FF;
+      --good:#00E676;
+      --warn:#FFEA00;
+      --bad:#FF5252;
+      --shadow: 0 12px 50px rgba(0,0,0,.55);
+      --radius: 22px;
+      --radius2: 16px;
+      --max: 1100px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--txt);
+      background: radial-gradient(1200px 600px at 15% 10%, rgba(124,77,255,.22), transparent 55%),
+                  radial-gradient(1000px 520px at 85% 20%, rgba(0,229,255,.20), transparent 55%),
+                  radial-gradient(900px 540px at 50% 100%, rgba(0,230,118,.10), transparent 60%),
+                  linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow-x:hidden;
+    }
+
+    /* Background canvas */
+    #fx{
+      position:fixed;
+      inset:0;
+      z-index:-2;
+      opacity:.9;
+    }
+
+    /* Soft animated gradient blobs */
+    .blob{
+      position:fixed;
+      width:520px; height:520px;
+      border-radius:50%;
+      filter: blur(60px);
+      z-index:-3;
+      opacity:.25;
+      animation: floaty 12s ease-in-out infinite;
+      pointer-events:none;
+    }
+    .b1{ left:-140px; top:-120px; background: radial-gradient(circle at 30% 30%, var(--accent), transparent 60%);}
+    .b2{ right:-160px; top:90px; background: radial-gradient(circle at 30% 30%, var(--accent2), transparent 60%); animation-delay: -4s;}
+    .b3{ left:18%; bottom:-260px; background: radial-gradient(circle at 30% 30%, var(--good), transparent 60%); animation-delay: -8s;}
+
+    @keyframes floaty{
+      0%,100%{ transform: translate(0,0) scale(1);}
+      50%{ transform: translate(40px,-30px) scale(1.05);}
+    }
+
+    a{color:inherit; text-decoration:none}
+    .container{max-width:var(--max); margin:0 auto; padding: 0 18px;}
+    .btn{
+      display:inline-flex; align-items:center; gap:10px;
+      padding: 12px 16px;
+      border-radius: 999px;
+      border:1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.05));
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      transition: transform .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+      cursor:pointer;
+      user-select:none;
+      font-weight:650;
+      letter-spacing:.2px;
+    }
+    .btn:hover{
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,.18);
+      background: linear-gradient(180deg, rgba(255,255,255,.13), rgba(255,255,255,.07));
+      box-shadow: 0 14px 40px rgba(0,0,0,.35);
+    }
+    .btn.primary{
+      border: 1px solid rgba(124,77,255,.45);
+      background: linear-gradient(135deg, rgba(124,77,255,.40), rgba(0,229,255,.25));
+    }
+    .btn.primary:hover{ border-color: rgba(0,229,255,.55); }
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      color: var(--muted);
+      font-weight:600;
+      font-size: 13px;
+      white-space:nowrap;
+    }
+
+    /* Header */
+    header{
+      position:sticky;
+      top:0;
+      z-index:50;
+      backdrop-filter: blur(12px);
+      background: rgba(7,10,18,.55);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .nav{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding: 14px 0;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      font-weight:800;
+      letter-spacing:.4px;
+    }
+    .logo{
+      width:40px; height:40px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(124,77,255,.9), rgba(0,229,255,.8));
+      box-shadow: 0 18px 50px rgba(124,77,255,.22);
+      position:relative;
+      overflow:hidden;
+    }
+    .logo::after{
+      content:"";
+      position:absolute; inset:-30%;
+      background: radial-gradient(circle at 40% 30%, rgba(255,255,255,.6), transparent 40%);
+      transform: rotate(18deg);
+      animation: shimmer 3.5s ease-in-out infinite;
+      opacity:.7;
+    }
+    @keyframes shimmer{
+      0%,100%{ transform: translateX(-10%) rotate(18deg); }
+      50%{ transform: translateX(12%) rotate(18deg); }
+    }
+    .navlinks{
+      display:flex; gap:18px; align-items:center;
+      color: var(--muted);
+      font-weight:650;
+    }
+    .navlinks a{
+      position:relative;
+      padding:10px 10px;
+      border-radius: 10px;
+      transition: background .2s ease, color .2s ease;
+    }
+    .navlinks a:hover{
+      background: rgba(255,255,255,.06);
+      color: var(--txt);
+    }
+    .navActions{display:flex; gap:10px; align-items:center;}
+    .menuBtn{display:none}
+
+    /* Hero */
+    .hero{
+      padding: 48px 0 10px;
+      position:relative;
+    }
+    .heroGrid{
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap: 18px;
+      align-items:stretch;
+    }
+    .glass{
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .glass::before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      background: radial-gradient(650px 250px at 18% 12%, rgba(124,77,255,.25), transparent 55%),
+                  radial-gradient(650px 250px at 82% 18%, rgba(0,229,255,.22), transparent 55%);
+      opacity:.7;
+      pointer-events:none;
+    }
+    .heroMain{ padding: 26px; }
+    .kicker{
+      display:flex; flex-wrap:wrap; gap:10px;
+      margin-bottom: 12px;
+    }
+    h1{
+      margin: 8px 0 8px;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.06;
+      letter-spacing: -.8px;
+    }
+    .subtitle{
+      color: var(--muted);
+      font-size: 15.8px;
+      line-height: 1.6;
+      max-width: 60ch;
+    }
+    .typeLine{
+      margin-top: 12px;
+      font-weight:750;
+      color: rgba(255,255,255,.86);
+      display:flex; align-items:center; gap:10px;
+      flex-wrap:wrap;
+    }
+    .cursor{
+      width:10px; height:18px;
+      border-radius: 6px;
+      background: rgba(255,255,255,.7);
+      display:inline-block;
+      animation: blink .9s infinite;
+      transform: translateY(2px);
+    }
+    @keyframes blink{
+      0%,49%{opacity:1}
+      50%,100%{opacity:0}
+    }
+    .heroBtns{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 16px;}
+    .heroMeta{
+      display:grid;
+      grid-template-columns: repeat(2,1fr);
+      gap:12px;
+      padding: 18px;
+    }
+    .mini{
+      padding: 16px;
+      border-radius: var(--radius2);
+      background: rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.10);
+      position:relative;
+      overflow:hidden;
+      transition: transform .22s ease, border-color .22s ease;
+    }
+    .mini:hover{ transform: translateY(-3px); border-color: rgba(255,255,255,.18); }
+    .mini .label{
+      color: var(--muted2);
+      font-weight:700;
+      font-size: 12.5px;
+      letter-spacing:.3px;
+      text-transform: uppercase;
+    }
+    .mini .value{
+      margin-top: 8px;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -.2px;
+    }
+    .mini .value small{ color: var(--muted); font-weight:700 }
+    .mini i{ color: rgba(255,255,255,.82); opacity:.85 }
+
+    /* Sections */
+    section{ padding: 28px 0; }
+    .sectionTitle{
+      display:flex; align-items:flex-end; justify-content:space-between; gap:12px;
+      margin-bottom: 14px;
+    }
+    .sectionTitle h2{
+      margin:0;
+      font-size: clamp(20px, 2.6vw, 28px);
+      letter-spacing: -.3px;
+    }
+    .sectionTitle p{
+      margin:0;
+      color: var(--muted);
+      font-weight:650;
+      font-size: 14px;
+    }
+
+    /* Cards grid */
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .card{
+      padding: 18px;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: 0 10px 40px rgba(0,0,0,.25);
+      position:relative;
+      overflow:hidden;
+      transform: translateY(6px);
+      opacity: 0;
+    }
+    .card.reveal{
+      transform: translateY(0);
+      opacity: 1;
+      transition: transform .6s cubic-bezier(.2,.8,.2,1), opacity .6s ease;
+    }
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      background: radial-gradient(480px 160px at 20% 10%, rgba(124,77,255,.20), transparent 55%),
+                  radial-gradient(480px 160px at 80% 25%, rgba(0,229,255,.16), transparent 55%);
+      opacity:.9;
+      pointer-events:none;
+    }
+    .cardTop{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+      margin-bottom: 12px;
+      position:relative;
+    }
+    .cardIcon{
+      width:42px; height:42px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      display:grid; place-items:center;
+    }
+    .cardIcon i{ font-size: 18px; opacity:.9;}
+    .card h3{
+      margin: 0 0 6px;
+      font-size: 16.5px;
+      letter-spacing:-.2px;
+    }
+    .card p{
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 14.2px;
+      position:relative;
+    }
+    .tags{ display:flex; flex-wrap:wrap; gap:8px; margin-top: 12px; position:relative;}
+    .tag{
+      font-size: 12px;
+      color: rgba(255,255,255,.74);
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 650;
+    }
+
+    /* Projects */
+    .projectCard{
+      padding: 0;
+    }
+    .projectHeader{
+      padding: 18px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(124,77,255,.18);
+      border: 1px solid rgba(124,77,255,.35);
+      color: rgba(255,255,255,.86);
+      font-weight:800;
+      font-size: 12px;
+      white-space:nowrap;
+    }
+    .projectBody{ padding: 18px;}
+    .projectBody ul{
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 14.1px;
+    }
+    .projectActions{
+      padding: 16px 18px 18px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .btn.ghost{ background: rgba(255,255,255,.06); }
+    .btn.small{ padding: 10px 12px; font-size: 13.5px; }
+
+    /* Timeline / Workshop */
+    .timeline{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .tItem{
+      padding: 18px;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: 0 10px 40px rgba(0,0,0,.22);
+      position:relative;
+      overflow:hidden;
+      transform: translateY(6px);
+      opacity:0;
+    }
+    .tItem.reveal{
+      transform: translateY(0);
+      opacity: 1;
+      transition: transform .6s cubic-bezier(.2,.8,.2,1), opacity .6s ease;
+    }
+    .tItem h3{ margin: 0 0 6px; font-size: 16.5px;}
+    .tItem p{ margin:0; color: var(--muted); line-height: 1.6; font-size: 14.1px;}
+    .tMeta{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 12px;}
+    .pill{
+      padding: 7px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.76);
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    /* Footer / Contact */
+    .contact{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      align-items:stretch;
+    }
+    .contactBox{
+      padding: 18px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.06);
+      box-shadow: 0 10px 40px rgba(0,0,0,.25);
+      position:relative;
+      overflow:hidden;
+      transform: translateY(6px);
+      opacity:0;
+    }
+    .contactBox.reveal{
+      transform: translateY(0);
+      opacity: 1;
+      transition: transform .6s cubic-bezier(.2,.8,.2,1), opacity .6s ease;
+    }
+    .contactBox h3{ margin:0 0 8px; font-size:16.5px;}
+    .contactBox p{ margin:0; color: var(--muted); line-height:1.6; font-size:14.1px;}
+    .contactLinks{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 12px;
+    }
+
+    footer{
+      padding: 24px 0 34px;
+      color: var(--muted2);
+      border-top: 1px solid rgba(255,255,255,.08);
+      margin-top: 18px;
+    }
+    .footRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    /* Mobile */
+    @media (max-width: 920px){
+      .heroGrid{ grid-template-columns: 1fr; }
+      .grid{ grid-template-columns: 1fr; }
+      .timeline{ grid-template-columns: 1fr; }
+      .contact{ grid-template-columns: 1fr; }
+      .navlinks{ display:none; }
+      .menuBtn{ display:inline-flex; }
+    }
+
+    /* Mobile drawer */
+    .drawer{
+      position:fixed;
+      top:62px;
+      right:12px;
+      width:min(92vw, 360px);
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(8,12,24,.88);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 22px 60px rgba(0,0,0,.55);
+      padding: 12px;
+      display:none;
+      z-index:100;
+    }
+    .drawer.open{ display:block; }
+    .drawer a{
+      display:block;
+      padding: 12px 12px;
+      border-radius: 12px;
+      color: var(--muted);
+      font-weight: 750;
+    }
+    .drawer a:hover{ background: rgba(255,255,255,.07); color: var(--txt); }
+
+    /* Micro animations */
+    .spark{
+      position:absolute;
+      inset:auto;
+      width: 160px;
+      height: 160px;
+      right:-60px;
+      top:-60px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.20), transparent 60%);
+      border-radius: 50%;
+      filter: blur(10px);
+      opacity:.55;
+      animation: pulse 3.2s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes pulse{
+      0%,100%{ transform: scale(1); opacity:.45;}
+      50%{ transform: scale(1.1); opacity:.65;}
+    }
+
+    /* Scroll progress bar */
+    .progress{
+      position:fixed;
+      top:0; left:0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      z-index:200;
+      box-shadow: 0 0 25px rgba(124,77,255,.35);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="progress" id="progress"></div>
+  <canvas id="fx"></canvas>
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+
+  <header>
+    <div class="container">
+      <div class="nav">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <div style="font-size:14px; opacity:.9;">B.Sc (CSE) Portfolio</div>
+            <div style="font-size:12px; color:var(--muted); font-weight:700;">Haldia Institute of Management • 2nd Year • 4th Sem</div>
+          </div>
+        </div>
+
+        <nav class="navlinks" aria-label="Primary navigation">
+          <a href="#about">About</a>
+          <a href="#skills">Skills</a>
+          <a href="#projects">Projects</a>
+          <a href="#workshop">Workshops</a>
+          <a href="#contact">Contact</a>
+        </nav>
+
+        <div class="navActions">
+          <a class="btn small ghost" id="githubBtn" href="#" target="_blank" rel="noopener">
+            <i class="fa-brands fa-github"></i> GitHub
+          </a>
+          <button class="btn small menuBtn" id="menuBtn" type="button">
+            <i class="fa-solid fa-bars"></i> Menu
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="drawer" id="drawer">
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
+      <a href="#workshop">Workshops</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container">
+        <div class="heroGrid">
+          <div class="glass">
+            <div class="heroMain">
+              <div class="kicker">
+                <span class="chip"><i class="fa-solid fa-wand-magic-sparkles"></i> Python • Data • ML</span>
+                <span class="chip"><i class="fa-solid fa-robot"></i> Interested in AI, Automation & LLMs</span>
+                <span class="chip"><i class="fa-solid fa-bolt"></i> Portfolio-Ready Projects</span>
+              </div>
+
+              <h1>
+                Hi, I’m <span style="background:linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip:text; background-clip:text; color:transparent;">Sandipan Maity</span>
+                <br/>
+                <span style="color:rgba(255,255,255,.78); font-weight:800;">Building with Python & Machine Learning</span>
+              </h1>
+
+              <div class="typeLine">
+                <span>I build</span>
+                <span id="typeTarget" style="color: rgba(255,255,255,.92);"></span>
+                <span class="cursor" aria-hidden="true"></span>
+              </div>
+
+              <p class="subtitle">
+                I’m a B.Sc in Computer Science student (2nd year, 4th semester) from Haldia Institute of Management.
+                I completed a hands-on AI/ML workshop and built real projects using Python, EDA, and Linear Regression.
+                <br/><br/>
+                <span style="color:rgba(255,255,255,.82); font-weight:750;">Mentored by:</span>
+                <span style="color:rgba(255,255,255,.85); font-weight:850;">SK Sahil</span> (AI Developer & Tutor) — helped me build these projects and learn the core concepts.
+              </p>
+
+              <div class="heroBtns">
+                <a class="btn primary" href="#projects"><i class="fa-solid fa-layer-group"></i> View Projects</a>
+                <a class="btn" href="#contact"><i class="fa-solid fa-paper-plane"></i> Contact</a>
+                <a class="btn" href="https://www.instagram.com/code_scholar_eu/" target="_blank" rel="noopener">
+                  <i class="fa-brands fa-instagram"></i> Code_ScholarEU
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass">
+            <div class="spark"></div>
+            <div class="heroMeta">
+              <div class="mini">
+                <div class="label"><i class="fa-solid fa-clipboard-check"></i> Projects Completed</div>
+                <div class="value"><span id="projectCount">2</span> <small>AI/ML projects</small></div>
+              </div>
+              <div class="mini">
+                <div class="label"><i class="fa-solid fa-graduation-cap"></i> Focus</div>
+                <div class="value">AI • Automation • LLMs</div>
+              </div>
+              <div class="mini">
+                <div class="label"><i class="fa-solid fa-chart-line"></i> ML Model</div>
+                <div class="value">Linear Regression</div>
+              </div>
+              <div class="mini">
+                <div class="label"><i class="fa-solid fa-code"></i> Tools</div>
+                <div class="value">Colab • GitHub • Python</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about">
+      <div class="container">
+        <div class="sectionTitle">
+          <div>
+            <h2>About Me</h2>
+            <p>Short, clear and recruiter-friendly.</p>
+          </div>
+          <span class="chip"><i class="fa-solid fa-location-dot"></i> Haldia, India</span>
+        </div>
+
+        <div class="grid">
+          <div class="card revealOnScroll">
+            <div class="cardTop">
+              <div class="cardIcon"><i class="fa-solid fa-user-astronaut"></i></div>
+            </div>
+            <h3>Who I am</h3>
+            <p>
+              I’m a B.Sc (CS) student passionate about Python, data analysis, and Machine Learning.
+              I enjoy building projects that solve real problems and learning modern AI tools.
+            </p>
+            <div class="tags">
+              <span class="tag">Beginner-friendly ML</span>
+              <span class="tag">Project-based learning</span>
+              <span class="tag">Clean notebooks</span>
+            </div>
+          </div>
+
+          <div class="card revealOnScroll">
+            <div class="cardTop">
+              <div class="cardIcon"><i class="fa-solid fa-compass-drafting"></i></div>
+            </div>
+            <h3>What I’m learning</h3>
+            <p>
+              I’m exploring AI concepts like supervised learning, model evaluation, and basic feature engineering.
+              I’m also interested in automation workflows and LLM applications.
+            </p>
+            <div class="tags">
+              <span class="tag">AI</span>
+              <span class="tag">Automation</span>
+              <span class="tag">LLMs</span>
+            </div>
+          </div>
+
+          <div class="card revealOnScroll">
+            <div class="cardTop">
+              <div class="cardIcon"><i class="fa-solid fa-handshake-angle"></i></div>
+            </div>
+            <h3>Mentorship</h3>
+            <p>
+              Guided by <b>SK Sahil</b>, I completed hands-on projects in Google Colab and pushed them to GitHub.
+              This improved my confidence in coding + presenting ML concepts.
+            </p>
+            <div class="tags">
+              <span class="tag">Mentored projects</span>
+              <span class="tag">Presentation skills</span>
+              <span class="tag">GitHub workflow</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills">
+      <div class="container">
+        <div class="sectionTitle">
+          <div>
+            <h2>Skills & Tools</h2>
+            <p>Core concepts used in the projects.</p>
+          </div>
+          <span class="chip"><i class="fa-solid fa-fire"></i> Fast learner</span>
+        </div>
+
+        <div class="grid">
+          <div class="card revealOnScroll">
+            <div class="cardTop">
+              <div class="cardIcon"><i class="fa-brands fa-python"></i></div>
+            </div>
+            <h3>Python Foundations</h3>
+            <p>Variables, data types, loops, functions, lists, dictionaries — enough to build real ML notebooks.</p>
+            <div class="tags">
+              <span class="tag">Functions</span>
+              <span class="tag">Loops</span>
+              <span class="tag">Data structures</span>
+            </div>
+          </div>
+
+          <div class="card revealOnScroll">
+            <div class="cardTop">
+              <div class="cardIcon"><i class="fa-solid fa-table"></i></div>
+            </div>
+            <h3>Data Handling</h3>
+            <p>Pandas DataFrames, cleaning missing values, filtering, grouping, and extracting insights from data.</p>
+            <div class="tags">
+              <span class="tag">Pandas</span>
+              <span class="tag">EDA</span>
+              <span class="tag">Cleaning</span>
+            </div>
+          </div>
+
+          <div class="card revealOnScroll">
+            <div class="cardTop">
+              <div class="cardIcon"><i class="fa-solid fa-chart-simple"></i></div>
+            </div>
+            <h3>Visualization</h3>
+            <p>Matplotlib charts to understand patterns: bar charts, histograms, scatter plots, residual analysis.</p>
+            <div class="tags">
+              <span class="tag">Matplotlib</span>
+              <span class="tag">Charts</span>
+              <span class="tag">Insights</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects">
+      <div class="container">
+        <div class="sectionTitle">
+          <div>
+            <h2>Featured Projects</h2>
+            <p>Two projects built during the AI/ML workshop (Colab → GitHub).</p>
+          </div>
+          <span class="chip"><i class="fa-solid fa-star"></i> Portfolio highlights</span>
+        </div>
+
+        <div class="grid">
+          <!-- Project 1 -->
+          <div class="card projectCard revealOnScroll">
+            <div class="projectHeader">
+              <div style="display:flex; gap:12px; align-items:center;">
+                <div class="cardIcon"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+                <div>
+                  <h3 style="margin:0;">Project 1: EDA Dashboard (Titanic)</h3>
+                  <div style="color:var(--muted); font-weight:700; font-size:13px;">Exploratory Data Analysis • Visual Insights</div>
+                </div>
+              </div>
+              <span class="badge"><i class="fa-solid fa-check"></i> Completed</span>
+            </div>
+
+            <div class="projectBody">
+              <p>
+                A beginner-friendly EDA project where I loaded a real dataset, cleaned missing values, created visualizations,
+                and wrote insights from patterns.
+              </p>
+              <ul>
+                <li>Loaded dataset and explored columns using <b>Pandas</b></li>
+                <li>Handled missing values using <b>mean</b> and <b>mode</b></li>
+                <li>Created visualizations: survival count, gender vs survival, age distribution</li>
+                <li>Summarized key insights clearly (ready for presentation)</li>
+              </ul>
+
+              <div class="tags" style="margin-top:14px;">
+                <span class="tag">Pandas</span>
+                <span class="tag">Matplotlib</span>
+                <span class="tag">Cleaning</span>
+                <span class="tag">Insights</span>
+              </div>
+            </div>
+
+            <div class="projectActions">
+              <a class="btn small primary" href="#" target="_blank" rel="noopener" id="p1Notebook">
+                <i class="fa-solid fa-file-code"></i> Notebook Link
+              </a>
+              <a class="btn small ghost" href="#" target="_blank" rel="noopener" id="p1Repo">
+                <i class="fa-brands fa-github"></i> GitHub Repo
+              </a>
+            </div>
+          </div>
+
+          <!-- Project 2 -->
+          <div class="card projectCard revealOnScroll">
+            <div class="projectHeader">
+              <div style="display:flex; gap:12px; align-items:center;">
+                <div class="cardIcon"><i class="fa-solid fa-house-chimney"></i></div>
+                <div>
+                  <h3 style="margin:0;">Project 2: House Price Prediction</h3>
+                  <div style="color:var(--muted); font-weight:700; font-size:13px;">Linear Regression • Evaluation (RMSE, R²)</div>
+                </div>
+              </div>
+              <span class="badge" style="background: rgba(0,229,255,.16); border-color: rgba(0,229,255,.35);">
+                <i class="fa-solid fa-brain"></i> ML
+              </span>
+            </div>
+
+            <div class="projectBody">
+              <p>
+                Built my first supervised ML model using <b>Linear Regression</b>. The model learns from training data and predicts
+                house prices on unseen test data.
+              </p>
+              <ul>
+                <li>Performed <b>train-test split</b> to test on unseen data</li>
+                <li>Trained model using <b>scikit-learn</b> LinearRegression</li>
+                <li>Evaluated performance using <b>RMSE</b> and <b>R² score</b></li>
+                <li>Visualized <b>Actual vs Predicted</b> and residual errors</li>
+              </ul>
+
+              <div class="tags" style="margin-top:14px;">
+                <span class="tag">scikit-learn</span>
+                <span class="tag">Linear Regression</span>
+                <span class="tag">RMSE</span>
+                <span class="tag">R²</span>
+              </div>
+            </div>
+
+            <div class="projectActions">
+              <a class="btn small primary" href="#" target="_blank" rel="noopener" id="p2Notebook">
+                <i class="fa-solid fa-file-code"></i> Notebook Link
+              </a>
+              <a class="btn small ghost" href="#" target="_blank" rel="noopener" id="p2Repo">
+                <i class="fa-brands fa-github"></i> GitHub Repo
+              </a>
+            </div>
+          </div>
+
+          <!-- GitHub / CTA -->
+          <div class="card revealOnScroll">
+            <div class="cardTop">
+              <div class="cardIcon"><i class="fa-brands fa-github"></i></div>
+            </div>
+            <h3>My GitHub</h3>
+            <p>
+              All notebooks are organized by day/session and pushed to GitHub as part of the workshop deliverables.
+            </p>
+            <div class="tags">
+              <span class="tag">Colab → GitHub</span>
+              <span class="tag">Clean structure</span>
+              <span class="tag">README included</span>
+            </div>
+            <div style="margin-top:14px;">
+              <a class="btn primary" href="#" target="_blank" rel="noopener" id="githubMain">
+                <i class="fa-brands fa-github"></i> Open GitHub Profile
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKSHOP -->
+    <section id="workshop">
+      <div class="container">
+        <div class="sectionTitle">
+          <div>
+            <h2>Workshops & Learning</h2>
+            <p>Experience that supports my AI/ML journey.</p>
+          </div>
+          <span class="chip"><i class="fa-solid fa-certificate"></i> Hands-on</span>
+        </div>
+
+        <div class="timeline">
+          <div class="tItem revealOnScroll">
+            <h3>Ardent – AI & Machine Learning Workshop</h3>
+            <p>
+              Completed a practical workshop with theory + live coding in Google Colab. Built portfolio projects like EDA and
+              Linear Regression model development.
+            </p>
+            <div class="tMeta">
+              <span class="pill"><i class="fa-solid fa-clock"></i> 3 Days</span>
+              <span class="pill"><i class="fa-solid fa-laptop-code"></i> Colab</span>
+              <span class="pill"><i class="fa-solid fa-chart-line"></i> ML Foundations</span>
+            </div>
+          </div>
+
+          <div class="tItem revealOnScroll">
+            <h3>Code_ScholarEU – AI Development Learning</h3>
+            <p>
+              Learning modern AI development topics: automation workflows, LLM use-cases, and building real projects step-by-step.
+              Mentored and supported by SK Sahil.
+            </p>
+            <div class="tMeta">
+              <span class="pill"><i class="fa-solid fa-robot"></i> AI Dev</span>
+              <span class="pill"><i class="fa-solid fa-gears"></i> Automation</span>
+              <span class="pill"><i class="fa-solid fa-message"></i> LLM Interest</span>
+            </div>
+            <div style="margin-top:14px;">
+              <a class="btn small primary" href="https://www.instagram.com/code_scholar_eu/" target="_blank" rel="noopener">
+                <i class="fa-brands fa-instagram"></i> Visit Code_ScholarEU
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+      <div class="container">
+        <div class="sectionTitle">
+          <div>
+            <h2>Contact</h2>
+            <p>Replace with your real email/links.</p>
+          </div>
+          <span class="chip"><i class="fa-solid fa-shield-heart"></i> Open to internships</span>
+        </div>
+
+        <div class="contact">
+          <div class="contactBox revealOnScroll">
+            <h3>Let’s connect</h3>
+            <p>
+              I’m interested in internships and collaborations in Python, Data Analysis, and beginner ML.
+              I also want to learn more about automation and LLM applications.
+            </p>
+            <div class="contactLinks">
+              <a class="btn small primary" id="emailBtn" href="/cdn-cgi/l/email-protection#285b5c5d4c4d465c684d45494144064b4745">
+                <i class="fa-solid fa-envelope"></i> Email Me
+              </a>
+              <a class="btn small ghost" id="linkedinBtn" href="#" target="_blank" rel="noopener">
+                <i class="fa-brands fa-linkedin"></i> LinkedIn
+              </a>
+              <a class="btn small ghost" id="githubContactBtn" href="https://github.com/programmer-sandipan" target="_blank" rel="noopener">
+                <i class="fa-brands fa-github"></i> GitHub
+              </a>
+              <a class="btn small ghost" href="https://www.instagram.com/code_scholar_eu/" target="_blank" rel="noopener">
+                <i class="fa-brands fa-instagram"></i> Code_ScholarEU
+              </a>
+            </div>
+          </div>
+
+          <div class="contactBox revealOnScroll">
+            <h3>Mentor</h3>
+            <p>
+              <b>SK Sahil</b> helped me build these projects and guided me through ML basics, GitHub workflow, and portfolio building.
+            </p>
+            <div class="contactLinks">
+              <a class="btn small primary" href="https://www.instagram.com/code_scholar_eu/" target="_blank" rel="noopener">
+                <i class="fa-brands fa-instagram"></i> Company (Instagram)
+              </a>
+              <a class="btn small ghost" href="#projects">
+                <i class="fa-solid fa-layer-group"></i> See Projects
+              </a>
+            </div>
+            <div style="margin-top:12px; color:var(--muted2); font-weight:700; font-size:13px;">
+              Tip: Add mentor certificate/workshop proof link here (optional).
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container">
+        <div class="footRow">
+          <div>© <span id="year"></span> Student Portfolio • Built with HTML, CSS & JS</div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <span class="chip"><i class="fa-solid fa-sparkles"></i> Responsive</span>
+            <span class="chip"><i class="fa-solid fa-wand-magic-sparkles"></i> Animations</span>
+            <span class="chip"><i class="fa-solid fa-rocket"></i> Ready for GitHub</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    /********************
+     * EDIT THESE LINKS *
+     ********************/
+    const LINKS = {
+      githubProfile: "https://github.com/programmer-sandipan", // <-- replace
+      linkedin: "https://linkedin.com/in/sandipan-maity-35447839a",   // <-- replace (or remove)
+      project1Repo: "https://github.com/programmer-sandipan/AI-ML-Workshop-2025", // <-- replace
+      project2Repo: "https://github.com/programmer-sandipan/AI-ML-Workshop-2025", // <-- replace
+      project1Notebook: "#", // <-- add Colab/GitHub notebook link
+      project2Notebook: "#", // <-- add Colab/GitHub notebook link
+      email: "student@email.com" // <-- replace
+    };
+
+    // Apply links
+    const $ = (id) => document.getElementById(id);
+    $("githubBtn").href = LINKS.githubProfile;
+    $("githubMain").href = LINKS.githubProfile;
+    $("linkedinBtn").href = LINKS.linkedin;
+
+    $("p1Repo").href = LINKS.project1Repo;
+    $("p2Repo").href = LINKS.project2Repo;
+    $("p1Notebook").href = LINKS.project1Notebook;
+    $("p2Notebook").href = LINKS.project2Notebook;
+
+    $("emailBtn").href = `mailto:${LINKS.email}`;
+
+    /********************
+     * Mobile menu
+     ********************/
+    const menuBtn = $("menuBtn");
+    const drawer = $("drawer");
+    menuBtn?.addEventListener("click", () => drawer.classList.toggle("open"));
+    drawer?.querySelectorAll("a").forEach(a => a.addEventListener("click", () => drawer.classList.remove("open")));
+
+    /********************
+     * Typing effect
+     ********************/
+    const phrases = [
+      "EDA dashboards 📊",
+      "Linear Regression models 🧠",
+      "Python notebooks in Colab 💻",
+      "AI automation ideas ⚙️",
+      "LLM-powered apps (learning) 🤖"
+    ];
+    const target = $("typeTarget");
+    let p = 0, i = 0, deleting = false;
+
+    function typeLoop(){
+      const current = phrases[p];
+      if(!deleting){
+        i++;
+        target.textContent = current.slice(0, i);
+        if(i === current.length){
+          deleting = true;
+          setTimeout(typeLoop, 900);
+          return;
+        }
+      } else {
+        i--;
+        target.textContent = current.slice(0, i);
+        if(i === 0){
+          deleting = false;
+          p = (p + 1) % phrases.length;
+        }
+      }
+      setTimeout(typeLoop, deleting ? 35 : 55);
+    }
+    typeLoop();
+
+    /********************
+     * Scroll reveal
+     ********************/
+    const revealItems = document.querySelectorAll(".revealOnScroll");
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          e.target.classList.add("reveal");
+          io.unobserve(e.target);
+        }
+      });
+    }, {threshold: 0.12});
+    revealItems.forEach(el => io.observe(el));
+
+    /********************
+     * Scroll progress bar
+     ********************/
+    const progress = $("progress");
+    window.addEventListener("scroll", ()=>{
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      const sc = Math.max(0, Math.min(1, window.scrollY / (h || 1)));
+      progress.style.width = (sc * 100).toFixed(2) + "%";
+    });
+
+    /********************
+     * Footer year
+     ********************/
+    $("year").textContent = new Date().getFullYear();
+
+    /********************
+     * Particle canvas background
+     ********************/
+    const canvas = document.getElementById("fx");
+    const ctx = canvas.getContext("2d", { alpha: true });
+
+    function resize(){
+      canvas.width = window.innerWidth * devicePixelRatio;
+      canvas.height = window.innerHeight * devicePixelRatio;
+      canvas.style.width = window.innerWidth + "px";
+      canvas.style.height = window.innerHeight + "px";
+      ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    const particles = [];
+    const N = Math.min(120, Math.floor(window.innerWidth / 12));
+    for(let k=0; k<N; k++){
+      particles.push({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        r: 1 + Math.random() * 2.2,
+        vx: (-.35 + Math.random() * .7),
+        vy: (-.25 + Math.random() * .5),
+        a: .18 + Math.random() * .42
+      });
+    }
+
+    function draw(){
+      ctx.clearRect(0,0,window.innerWidth, window.innerHeight);
+
+      // dots
+      for(const pt of particles){
+        pt.x += pt.vx;
+        pt.y += pt.vy;
+        if(pt.x < -20) pt.x = window.innerWidth + 20;
+        if(pt.x > window.innerWidth + 20) pt.x = -20;
+        if(pt.y < -20) pt.y = window.innerHeight + 20;
+        if(pt.y > window.innerHeight + 20) pt.y = -20;
+
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, pt.r, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(255,255,255,${pt.a})`;
+        ctx.fill();
+      }
+
+      // lines
+      for(let a=0; a<particles.length; a++){
+        for(let b=a+1; b<particles.length; b++){
+          const p1 = particles[a], p2 = particles[b];
+          const dx = p1.x - p2.x, dy = p1.y - p2.y;
+          const d = Math.sqrt(dx*dx + dy*dy);
+          if(d < 120){
+            const alpha = (1 - d/120) * 0.12;
+            // soft accent gradient line
+            const grad = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
+            grad.addColorStop(0, `rgba(124,77,255,${alpha})`);
+            grad.addColorStop(1, `rgba(0,229,255,${alpha})`);
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      requestAnimationFrame(draw);
+    }
+    draw();
+
+    /********************
+     * Smooth anchor scroll
+     ********************/
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener("click", (e)=>{
+        const href = a.getAttribute("href");
+        if(href && href.length > 1){
+          const el = document.querySelector(href);
+          if(el){
+            e.preventDefault();
+            el.scrollIntoView({behavior:"smooth", block:"start"});
+          }
+        }
+      });
+    });
+
+    /********************
+     * Quick personalization helpers (optional)
+     ********************/
+    // Change "Student Name" quickly from query string: ?name=Rahul%20Das
+    // Change GitHub quickly: ?github=https://github.com/rahuldas
+    const params = new URLSearchParams(location.search);
+    const name = params.get("name");
+    const github = params.get("github");
+    if(name){
+      document.querySelectorAll("h1 span").forEach(sp=>{
+        if(sp.textContent.trim() === "Student Name") sp.textContent 
